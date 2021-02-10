@@ -14,11 +14,28 @@ pipeline {
     }
 
     stage('Test') {
-      environment {
-        CI = 'true'
-      }
-      steps {
-        sh './jenkins/scripts/test.sh'
+      parallel {
+        stage('Test') {
+          environment {
+            CI = 'true'
+          }
+          steps {
+            sh './jenkins/scripts/test.sh'
+          }
+        }
+
+        stage('Unit test') {
+          steps {
+            echo 'Hello from unit test'
+          }
+        }
+
+        stage('Performance testing') {
+          steps {
+            sleep 10
+          }
+        }
+
       }
     }
 
