@@ -36,11 +36,11 @@ pipeline {
                 downloadable -> downloadable.updateNow();
               }
 
-              def plugins = jenkins.model.Jenkins.instance.pluginManager.activePlugins.findAll {
+              /*          def plugins = jenkins.model.Jenkins.instance.pluginManager.activePlugins.findAll {
                 it.hasUpdate()
               }.collect {
                 it.getShortName()
-              }
+              } */
 
               println "Plugins to upgrade: ${plugins}"
             }
