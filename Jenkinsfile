@@ -28,43 +28,43 @@ pipeline {
           steps {
             echo 'Hello from unit test'
             script {
-              jenkins.model.Jenkins.getInstance().getUpdateCenter().getSites().each { site ->
-              site.updateDirectlyNow(hudson.model.DownloadService.signatureCheck)
+              jenkins.model.Jenkins.getInstance().getUpdateCenter().getSites().each {
+                site -> site.updateDirectlyNow(hudson.model.DownloadService.signatureCheck)
+              }
+
+              hudson.model.DownloadService.Downloadable.all().each {
+                downloadable -> downloadable.updateNow();
+              }
+
+              def it
+              def plugins = jenkins.model.Jenkins.instance.pluginManager.activePlugins.findAll {
+                it -> it.hasUpdate()
+              }.collect {
+                it -> it.getShortName()
+              }
+
+              println "Plugins to upgrade: ${plugins}"
             }
 
-            hudson.model.DownloadService.Downloadable.all().each { downloadable ->
-            downloadable.updateNow();
           }
+        }
 
-          def plugins = jenkins.model.Jenkins.instance.pluginManager.activePlugins.findAll {
-            it -> it.hasUpdate()
-          }.collect {
-            it -> it.getShortName()
+        stage('Performance testing') {
+          steps {
+            sleep 10
           }
-
-          println "Plugins to upgrade: ${plugins}"
-          long count = 0
         }
 
       }
     }
 
-    stage('Performance testing') {
+    stage('Deliver') {
       steps {
-        sleep 10
+        sh './jenkins/scripts/deliver.sh'
+        input 'Finished using the web site? (Click "Proceed" to continue)'
+        sh './jenkins/scripts/kill.sh'
       }
     }
 
   }
-}
-
-stage('Deliver') {
-  steps {
-    sh './jenkins/scripts/deliver.sh'
-    input 'Finished using the web site? (Click "Proceed" to continue)'
-    sh './jenkins/scripts/kill.sh'
-  }
-}
-
-}
 }
