@@ -37,7 +37,7 @@ pipeline {
               }
 
               def plugins = jenkins.model.Jenkins.instance.pluginManager.activePlugins.findAll {
-                it -> it.hasUpdate()
+                it.hasUpdate()
               }.collect {
                 it.getShortName()
               }
