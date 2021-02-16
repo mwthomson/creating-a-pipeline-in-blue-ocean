@@ -39,7 +39,7 @@ pipeline {
               def plugins = jenkins.model.Jenkins.instance.pluginManager.activePlugins.findAll {
                 it -> it.hasUpdate()
               }.collect {
-                it -> it.getShortName()
+                it.getShortName()
               }
 
               println "Plugins to upgrade: ${plugins}"
